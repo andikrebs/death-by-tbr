@@ -22,8 +22,9 @@
     h2 {
         font-size: 1.2rem;
         font-style: italic;
+        font-weight: lighter;
         color: #ccc;
-        margin-top: 5px;
+        margin-top: 10px;
         margin-bottom: 30px;
     }
     input {
@@ -118,21 +119,21 @@
 <h2>We were not built to conquer the TBR. Only to suffer beautifully beneath it.</h2>
 
 <input type="text" id="bookInput" placeholder="Enter book title">
-<button onclick="addBook()">Add to TBR</button>
+<button onclick="addBook()">Add to Shelf</button>
 <br><br>
-<button class="summon-btn" onclick="chooseBook()">☠ Summon Your Next Read ☠</button>
+<button class="summon-btn" onclick="chooseBook()">Summon Your Next Read</button>
 <p id="chosenBook"></p>
 <div id="chosenBookActions" style="display:none;">
     <button onclick="markAsRead()">Read this book</button>
 </div>
 <br>
-<button onclick="openModal()">View Full TBR List</button>
+<button onclick="openModal()">Reveal All Tomes</button>
 
 <!-- Modal -->
 <div id="tbrModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Your TBR List</h2>
+        <h2>The Tome Shelf</h2>
         <div id="bookList"></div>
     </div>
 </div>
