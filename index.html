@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Death by TBR</title>
+<style>
+    body {
+        font-family: 'Cinzel', serif;
+        background-color: #1b1b1b;
+        color: #e4e4e4;
+        text-align: center;
+        padding: 20px;
+        background-image: url('https://i.imgur.com/oh2O5Rm.png'); /* Subtle gothic skeleton pattern */
+        background-size: cover;
+        background-attachment: fixed;
+    }
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 0;
+        color: #ff3b3b;
+        text-shadow: 2px 2px 6px black;
+    }
+    h2 {
+        font-size: 1.2rem;
+        font-style: italic;
+        color: #ccc;
+        margin-top: 5px;
+        margin-bottom: 30px;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        width: 250px;
+        background-color: #2b2b2b;
+        color: white;
+    }
+    button {
+        background-color: #ff3b3b; /* brighter red */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 300; /* lighter weight */
+        transition: background-color 0.3s;
+    }
+    button:hover {
+        background-color: #ff5252;
+    }
+    .summon-btn {
+        font-size: 1.5rem;
+        padding: 15px 30px;
+        background-color: transparent;
+        border: 2px solid #ff3b3b;
+        color: #ff3b3b;
+        font-weight: 300;
+        text-transform: uppercase;
+    }
+    .summon-btn:hover {
+        background-color: #ff3b3b;
+        color: black;
+    }
+    #chosenBook {
+        margin-top: 20px;
+        font-size: 1.3rem;
+        color: #ffdcdc;
+    }
+    /* Modal styling */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 10;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.9);
+        overflow: auto;
+        padding-top: 50px;
+    }
+    .modal-content {
+        background-color: #2b2b2b;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        text-align: left;
+        color: white;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .close:hover {
+        color: #fff;
+    }
+    .book-item {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+        border-bottom: 1px solid #444;
+        padding-bottom: 4px;
+    }
+    .book-actions button {
+        background-color: #444;
+        font-weight: 300;
+        padding: 4px 8px;
+        margin-left: 4px;
+    }
+</style>
+</head>
+<body>
+
+<h1>💀 Death by TBR 💀</h1>
+<h2>We were not built to conquer the TBR. Only to suffer beautifully beneath it.</h2>
+
+<input type="text" id="bookInput" placeholder="Enter book title">
+<button onclick="addBook()">Add to TBR</button>
+<br><br>
+<button class="summon-btn" onclick="chooseBook()">☠ Summon Your Next Read ☠</button>
+<p id="chosenBook"></p>
+<div id="chosenBookActions" style="display:none;">
+    <button onclick="markAsRead()">Read this book</button>
+</div>
+<br>
+<button onclick="openModal()">View Full TBR List</button>
+
+<!-- Modal -->
+<div id="tbrModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Your TBR List</h2>
+        <div id="bookList"></div>
+    </div>
+</div>
+
+<script>
+    let tbrList = [];
+
+    function addBook() {
+        let input = document.getElementById("bookInput");
+        let title = input.value.trim();
+        if (title) {
+            tbrList.push(title);
+            input.value = "";
+        }
+    }
+
+    function chooseBook() {
+        if (tbrList.length === 0) {
+            document.getElementById("chosenBook").textContent = "Your TBR is empty... for now.";
+            document.getElementById("chosenBookActions").style.display = "none";
+            return;
+        }
+        let randomIndex = Math.floor(Math.random() * tbrList.length);
+        let chosen = tbrList[randomIndex];
+        document.getElementById("chosenBook").textContent = `📖 ${chosen}`;
+        document.getElementById("chosenBookActions").dataset.index = randomIndex;
+        document.getElementById("chosenBookActions").style.display = "block";
+    }
+
+    function markAsRead() {
+        let index = document.getElementById("chosenBookActions").dataset.index;
+        if (index !== undefined) {
+            tbrList.splice(index, 1);
+            document.getElementById("chosenBook").textContent = "Removed from TBR. Fate awaits...";
+            document.getElementById("chosenBookActions").style.display = "none";
+        }
+    }
+
+    function openModal() {
+        updateBookList();
+        document.getElementById("tbrModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("tbrModal").style.display = "none";
+    }
+
+    function updateBookList() {
+        let listDiv = document.getElementById("bookList");
+        listDiv.innerHTML = "";
+        if (tbrList.length === 0) {
+            listDiv.innerHTML = "<p>Your TBR is hauntingly empty.</p>";
+            return;
+        }
+        tbrList.forEach((book, index) => {
+            let div = document.createElement("div");
+            div.className = "book-item";
+            let span = document.createElement("span");
+            span.textContent = book;
+            let actions = document.createElement("div");
+            actions.className = "book-actions";
+
+            let editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.onclick = () => {
+                let newTitle = prompt("Rename this cursed tome:", book);
+                if (newTitle) tbrList[index] = newTitle.trim();
+                updateBookList();
+            };
+
+            let removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.onclick = () => {
+                tbrList.splice(index, 1);
+                updateBookList();
+            };
+
+            actions.appendChild(editBtn);
+            actions.appendChild(removeBtn);
+            div.appendChild(span);
+            div.appendChild(actions);
+            listDiv.appendChild(div);
+        });
+    }
+</script>
+
+</body>
+</html>
